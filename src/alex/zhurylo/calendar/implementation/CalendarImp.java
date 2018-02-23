@@ -8,11 +8,22 @@ import java.util.Locale;
 import java.util.Scanner;
 
 public class CalendarImp {
-    private static final String ANSI_RED = "\u001B[31m";
-    private static String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_BLUE = "\u001B[34m";
+    private static final String COLOR_RED = "\u001B[31m";
+    private static String COLOR_RESET = "\u001B[0m";
+    private static final String COLOR_BLUE = "\u001B[34m";
+    private static final String EXIT_PROGRAMME_LOWER_CASE = "exit";
+    private static final String EXIT_PROGRAMME_UPPER_CASE = "EXIT";
+    private static final Integer YEAR_NOW = 2018;
+    private static final TextStyle STYLE_OF_NAME = TextStyle.FULL_STANDALONE;
+    private static final String MONDEY = "Пн ";
+    private static final String TUESDAY = "Вт ";
+    private static final String WEDNESDAY = "Ср ";
+    private static final String THURSDAY = "Чт ";
+    private static final String FRIDAY = "Пт ";
+    private static final String SATURDAY = " Сб ";
+    private static final String SUNDAY = "Нд";
 
-    public static int returnFirstDayOfMonth(String firstDay) {
+    private static int returnFirstDayOfMonth(String firstDay) {
         int firstDayOfMonth = 0;
         switch (firstDay) {
             case ("SUNDAY"):
@@ -40,7 +51,7 @@ public class CalendarImp {
         return firstDayOfMonth;
     }
 
-    public static Month returnNameMonth(String nameMonthGivenUser) {
+    private static Month returnNameMonth(String nameMonthGivenUser) {
         Month nameMonth = null;
         switch (nameMonthGivenUser) {
             case ("Junuary"):
@@ -112,22 +123,27 @@ public class CalendarImp {
         Scanner inputData = new Scanner(System.in);
         Boolean exucute = true;
         LocalDate dayNow = LocalDate.now();
+        Integer dateOfMonth;
+        Integer yearNow;
+        LocalDate localDate;
+        Locale languageLocale = Locale.getDefault();
         while (exucute) {
             System.out.println("Write please name month. Example format ( Junuary ; JUNUARY  ; Січень ) ");
             System.out.println("To exit the program, please enter ( EXIT or exit)");
             String userDataEntered = inputData.next();
-            if (userDataEntered.equals("EXIT") || userDataEntered.equals("exit")) {
+            if (userDataEntered.equals(EXIT_PROGRAMME_UPPER_CASE) || userDataEntered.equals(EXIT_PROGRAMME_LOWER_CASE)) {
                 exucute = false;
             }
             Month nameMonth = returnNameMonth(userDataEntered);
-            LocalDate localDate = null;
             if (nameMonth == null) {
                 System.out.println("Unfortunately, you entered incorrect data, so the current month is displayed");
                 localDate = LocalDate.now();
             } else {
-                localDate = LocalDate.of(2018, nameMonth, nameMonth.getValue());
+                dateOfMonth = nameMonth.getValue();
+                localDate = LocalDate.of(YEAR_NOW, nameMonth, dateOfMonth);
             }
-            String nameFirstDayOfMonth = "";
+            yearNow = localDate.getYear();
+            String nameFirstDayOfMonth;
             if (localDate.getMonth() == Month.JANUARY) {
                 nameFirstDayOfMonth = String.valueOf(Year.now().atMonth(localDate.getMonth().minus(1).ordinal()).atEndOfMonth().getDayOfWeek().plus(2));
             } else {
@@ -135,9 +151,9 @@ public class CalendarImp {
             }
             int dayCounter = 1;
             int lengthOfMonth = localDate.lengthOfMonth();
-            System.out.printf("%15s %d  \n", localDate.getMonth().getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault()), localDate.getYear());
+            System.out.printf("%15s %d  \n", localDate.getMonth().getDisplayName(STYLE_OF_NAME, languageLocale), yearNow);
             System.out.println("----------------------------");
-            System.out.printf("%s %s %s %s %s %s %s\n ", "Пон", "Вт", "Сер", " Чет ", "Пт ", "Сб ", " Нд");
+            System.out.printf("%s %s %s %s %s %s %s\n ", MONDEY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY);
             int firstDayofWeek = returnFirstDayOfMonth(nameFirstDayOfMonth);
             for (int space = 0; space < firstDayofWeek; space++) {
                 System.out.printf("%4s", "    ");
@@ -146,22 +162,21 @@ public class CalendarImp {
             for (int i = 1; i <= lengthOfMonth; i++) {
                 dayCounter++;
                 if (dayNow.getDayOfMonth() == i && dayNow.getMonth() == localDate.getMonth()) {
-                    System.out.print(ANSI_BLUE);
+                    System.out.print(COLOR_BLUE);
                 }
-                System.out.print(ANSI_RESET);
+                System.out.print(COLOR_RESET);
                 if (dayCounter % 7 == 0 && i == 1) {
-                    System.out.print(ANSI_RED);
+                    System.out.print(COLOR_RED);
                     System.out.printf("%- 1d\n", i);
                     dayCounter--;
-                }
-                else if (dayCounter % 6 == 0) {
-                    System.out.print(ANSI_RED);
+                } else if (dayCounter % 6 == 0) {
+                    System.out.print(COLOR_RED);
                     System.out.printf("%- 4d", i);
                     if (i != lengthOfMonth)
                         System.out.printf("%- 4d\n", ++i);
-                    System.out.print(ANSI_RESET);
+                    System.out.print(COLOR_RESET);
                 } else {
-                    System.out.print(ANSI_RESET);
+                    System.out.print(COLOR_RESET);
                     System.out.printf("%-4d", i);
                 }
             }
