@@ -1,5 +1,6 @@
 package alex.zhurylo.calendar.implementation;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
@@ -22,6 +23,7 @@ public class CalendarImp {
     private static final String FRIDAY = "Пт ";
     private static final String SATURDAY = " Сб ";
     private static final String SUNDAY = "Нд";
+    private static final Scanner SCANNER_DATA = new Scanner(System.in);
 
     private static int returnFirstDayOfMonth(String firstDay) {
         int firstDayOfMonth = 0;
@@ -49,6 +51,34 @@ public class CalendarImp {
                 break;
         }
         return firstDayOfMonth;
+    }
+
+    private static DayOfWeek returnNameDate(String firstDay) {
+        DayOfWeek dayOfWeek;
+        switch (firstDay) {
+            case ("SUNDAY"):
+                dayOfWeek = DayOfWeek.SUNDAY;
+                break;
+            case ("MONDAY"):
+                dayOfWeek = DayOfWeek.MONDAY;
+                break;
+            case ("TUESDAY"):
+                dayOfWeek = DayOfWeek.TUESDAY;
+                break;
+            case ("WEDNESDAY"):
+                dayOfWeek = DayOfWeek.WEDNESDAY;
+                break;
+            case ("THURSDAY"):
+                dayOfWeek = DayOfWeek.THURSDAY;
+                break;
+            case ("FRIDAY"):
+                dayOfWeek = DayOfWeek.FRIDAY;
+                break;
+            default:
+                dayOfWeek = DayOfWeek.SATURDAY;
+                break;
+        }
+        return dayOfWeek;
     }
 
     private static Month returnNameMonth(String nameMonthGivenUser) {
@@ -120,17 +150,18 @@ public class CalendarImp {
     }
 
     public static void startApplacation() {
-        Scanner inputData = new Scanner(System.in);
+
         Boolean exucute = true;
         LocalDate dayNow = LocalDate.now();
         Integer dateOfMonth;
         Integer yearNow;
         LocalDate localDate;
         Locale languageLocale = Locale.getDefault();
+        int dayCounter = 1;
         while (exucute) {
             System.out.println("Write please name month. Example format ( Junuary ; JUNUARY  ; Січень ) ");
             System.out.println("To exit the program, please enter ( EXIT or exit)");
-            String userDataEntered = inputData.next();
+            String userDataEntered = SCANNER_DATA.next();
             if (userDataEntered.equals(EXIT_PROGRAMME_UPPER_CASE) || userDataEntered.equals(EXIT_PROGRAMME_LOWER_CASE)) {
                 exucute = false;
             }
@@ -149,7 +180,7 @@ public class CalendarImp {
             } else {
                 nameFirstDayOfMonth = String.valueOf(Year.now().atMonth(localDate.getMonth().minus(1)).atEndOfMonth().getDayOfWeek());
             }
-            int dayCounter = 1;
+            DayOfWeek dayOfWeek = returnNameDate(nameFirstDayOfMonth);
             int lengthOfMonth = localDate.lengthOfMonth();
             System.out.printf("%15s %d  \n", localDate.getMonth().getDisplayName(STYLE_OF_NAME, languageLocale), yearNow);
             System.out.println("----------------------------");
@@ -165,11 +196,11 @@ public class CalendarImp {
                     System.out.print(COLOR_BLUE);
                 }
                 System.out.print(COLOR_RESET);
-                if (dayCounter % 7 == 0 && i == 1) {
+                if (dayOfWeek.plus(i) == DayOfWeek.SUNDAY && i == 1) {
                     System.out.print(COLOR_RED);
                     System.out.printf("%- 1d\n", i);
                     dayCounter--;
-                } else if (dayCounter % 6 == 0) {
+                } else if (dayOfWeek.plus(i) == DayOfWeek.SATURDAY ) {
                     System.out.print(COLOR_RED);
                     System.out.printf("%- 4d", i);
                     if (i != lengthOfMonth)
